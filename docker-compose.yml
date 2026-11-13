@@ -1,0 +1,20 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ailocalservice-web
+    container_name: ailocalservice-web
+    restart: unless-stopped
+    ports:
+      # Map host port 8080 to container port 80 (nginx default)
+      - "8080:80"
+    networks:
+      - appnet
+    # Environment variables can be added here when the app needs them.
+    # No secrets are stored in this file. For secret management, use
+    # Docker secrets or environment files outside the project (e.g. .env).
+
+networks:
+  appnet:
+    driver: bridge

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Solutions | Local AI Service</title>
+  <style>
+    :root {
+      --bg: #0b0f1a;
+      --surface: #111827;
+      --surface2: #1a2332;
+      --text: #e5e7eb;
+      --text2: #9ca3af;
+      --accent: #3b82f6;
+      --accent2: #8b5cf6;
+      --accent3: #06b6d4;
+      --gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(11, 15, 26, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text2);
+      font-size: 0.925rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-btn {
+      padding: 8px 20px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .nav-btn:hover { background: var(--accent); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      background: var(--bg);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-content .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      line-height: 1.15;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+    .hero-content h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-content p {
+      color: var(--text2);
+      font-size: 1.1rem;
+      margin-bottom: 32px;
+    }
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .btn {
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: var(--gradient);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(59, 130, 246, 0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 28px rgba(59, 130, 246, 0.45); }
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .btn-secondary:hover { background: var(--surface); }
+
+    .hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-visual .mock {
+      width: 100%;
+      max-width: 400px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+    .mock-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .mock-header .dot {
+      width: 12px; height: 12px; border-radius: 50%;
+      background: var(--accent);
+    }
+    .mock-header .dot.dots2 { background: var(--accent2); }
+    .mock-header .dot.dots3 { background: var(--accent3); }
+    .mock-body { display: flex; flex-direction: column; gap: 12px; }
+    .mock-card {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .mock-card .label {
+      font-size: 0.75rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .mock-card .value { font-weight: 600; margin-top: 4px; }
+    .mock-chart {
+      height: 80px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .mock-chart .bar {
+      flex: 1;
+      border-radius: 4px;
+      background: var(--accent2);
+      min-height: 20px;
+    }
+    .mock-chart .bar:nth-child(2) { background: var(--accent); }
+    .mock-chart .bar:nth-child(3) { background: var(--accent3); }
+    .mock-chart .bar:nth-child(4) { background: #a855f7; }
+    .mock-chart .bar:nth-child(5) { background: var(--accent); }
+
+    /* Sections */
+    section {
+      padding: 80px 24px;
+    }
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-label {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      color: var(--text2);
+      max-width: 640px;
+      margin-bottom: 40px;
+    }
+
+    /* Services */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    .service-icon {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+    }
+    .service-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .service-card p {
+      color: var(--text2);
+      font-size: 0.92rem;
+    }
+
+    /* Workflow */
+    .workflow {
+      background: var(--surface);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .workflow-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    .step-number {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .step:after {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 24px;
+      bottom: 24px;
+      width: 2px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+    .step:last-child { text-align: right; }
+    .step:last-child:after { display: none; }
+    .step h3 { font-size: 1.05rem; margin-bottom: 6px; }
+    .step p { color: var(--text2); font-size: 0.88rem; }
+
+    /* CTA */
+    .cta {
+      background: var(--gradient);
+      border-radius: var(--radius);
+      padding: 64px 24px;
+      text-align: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cta-inner {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta h2 { font-size: 2.2rem; font-weight: 800; margin: 0; }
+    .cta p { color: rgba(255, 255, 255, 0.9); max-width: 560px; margin: 0 auto; }
+    .cta .stat-row {
+      display: flex;
+      gap: 32px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .cta .stat {
+      text-align: center;
+    }
+    .cta .stat .num {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+    .cta .stat .label { font-size: 0.85rem; color: rgba(255, 255, 255, 0.8); }
+
+    /* Footer */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 48px 24px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .footer-col h4 {
+      color: var(--text);
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+    .footer-col ul {
+      list-style: none;
+    }
+    .footer-col ul li {
+      margin-bottom: 8px;
+      color: var(--text2);
+    }
+    .footer-col ul li a:hover { color: var(--text); }
+    .footer-bottom {
+      text-align: center;
+      max-width: 1100px;
+      margin: 32px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text2);
+      font-size: 0.85rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 { font-size: 2.2rem; }
+      .hero-grid { grid-template-columns: 1fr; gap: 32px; }
+      .hero-visual { order: -1; }
+      .nav-links {
+        position: fixed;
+        top: 64px; left: 0; right: 0;
+        flex-direction: column;
+        background: rgba(11, 15, 26, 0.98);
+        gap: 16px;
+        padding: 24px;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+      }
+      .nav-links.open { transform: translateY(0); }
+      .hamburger { display: flex; }
+      .hero-content h1 { font-size: 2rem; }
+      .section-title { font-size: 1.6rem; }
+      .cta .stat-row { gap: 20px; }
+      .cta h2 { font-size: 1.8rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-content h1 { font-size: 1.7rem; }
+      .hero-buttons .btn { width: 100%; justify-content: center; }
+      .cta h2 { font-size: 1.5rem; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Reveal animation */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="container nav-inner">
+      <a href="#" class="logo">AI<span class="gradient-text">Local</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#services">Layanan</a></li>
+        <li><a href="#workflow">Alur Kerja</a></li>
+        <li><a href="#contact">Kontak</a></li>
+        <li><a href="#contact" class="nav-btn">Mulai</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <span class="badge">⚡ Solusi AI Lokal &amp; Cepat</span>
+        <h1>AI yang <span class="gradient-text">maju</span> untuk bisnis Anda</h1>
+        <p>Otomatisasi, analitik, dan chatbot cerdas buat tim Anda — berjalan di server lokal agar data tetap aman.</p>
+        <div class="hero-buttons">
+          <button class="btn btn-primary" onclick="scrollToSection('contact')">Mulai Gratis</button>
+          <button class="btn btn-secondary" onclick="scrollToSection('services')">Lihat Layanan</button>
+        </div>
+        <p class="reveal" style="margin-top:24px;font-size:0.9rem;">Gratis tanpa kartu kredit · Deploy dalam 5 menit</p>
+      </div>
+      <div class="hero-visual">
+        <div class="mock">
+          <div class="mock-header">
+            <span class="dot"></span><span class="dot dots2"></span><span class="dot dots3"></span>
+            <span style="margin-left:8px;font-size:0.8rem;color:var(--text2);">AI Workspace</span>
+          </div>
+          <div class="mock-body">
+            <div class="mock-card">
+              <div class="label">peningkatan produktivitas</div>
+              <div class="value">+42%</div>
+            </div>
+            <div class="mock-card">
+              <div class="label">waktu proses</div>
+              <div class="value">0.8s</div>
+            </div>
+            <div class="mock-card">
+              <div class="label">ingin tahu</div>
+              <div class="value" style="color:var(--accent);">AI Chatbot siap</div>
+            </div>
+            <div class="mock-chart">
+              <div class="bar" style="height:40%;"></div>
+              <div class="bar" style="height:65%;"></div>
+              <div class="bar" style="height:50%;"></div>
+              <div class="bar" style="height:80%;"></div>
+              <div class="bar" style="height:60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="services">
+    <div class="container section-inner">
+      <h2 class="section-label">Layanan Kami</h2>
+      <h3 class="section-title reveal">Solusi AI untuk kebutuhan bisnis Anda</h3>
+      <p class="section-subtitle reveal">Empat layanan inti yang dapat diintegrasikan dengan cepat ke sistem Anda.</p>
+
+      <div class="services-grid">
+        <div class="service-card reveal">
+          <div class="service-icon">🤖</div>
+          <h3>Chatbot &amp; Asisten Virtual</h3>
+          <p>Chatbot tawar-menawar 24/7 yang menjawab pertanyaan pelanggan dengan bahasa alami dan menghubungkan ke sistem Anda.
+
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon">📊</div>
+          <h3>Laporan &amp; Analitik Otomatis</h3>
+          <p>Dashboard real-time yang mentransformasi data mentah menjadi laporan bisnis yang action-ready setiap hari.
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon">🖼️</div>
+          <h3>Pemrosesan Citra &amp; Video</h3>
+          <p>Deteksi objek, OCR, dan pempotretan otomatis untuk operasi gudang, ritel, dan konten media.
+          </p>
+        </div>
+        <div class="service-card reveal">
+          <div class="service-icon">⚙️</div>
+          <h3>Integrasi &amp; Otomatisasi</h3>
+          <p>Rangkaian alur kerja antar sistem (CRM, dokumen, email) yang berjalan tanpa campur tangan manual.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="workflow" id="workflow">
+    <div class="container section-inner">
+      <h2 class="section-label">Alur Kerja</h2>
+      <h3 class="section-title reveal">Dari konsultasi hingga produksi</h3>
+      <p class="section-subtitle reveal">Proses yang transparan dan cepat, tanpa membebani tim Anda.</p>
+
+      <div class="workflow-steps">
+        <div class="step reveal">
+          <div class="step-number">1</div>
+          <h3>Konsultasi</h3>
+          <p>Kami mendengarkan kebutuhan bisnis Anda, menetapkan prioritas, dan menyusun roadmap budaya pengembangan AI.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">2</div>
+          <h3>Pengembangan</h3>
+          <p>Model dirancang, dilatih, dan diintegrasikan ke dalam infrastruktur internal Anda dengan prinsip keamanan.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">3</div>
+          <h3>Pengujian &amp; Validasi</h3>
+          <p>Uji coba penskalaan, uji keamanan, dan ujiakhir bersama tim Anda sebelum go-live.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">4</div>
+          <h3>Deployment</h3>
+          <p>Landing di server lokal atau cloud. Monitoring otomatis, dashboard, dan akses seluruh tim.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-number">5</div>
+          <h3>Dukungan &amp; Pelatihan</h3>
+          <p>Dokumentasi lengkap, pelatihan tim, dan dukungan cetak pelayanan untuk berjalan seiring waktu.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="cta">
+    <div class="cta-inner">
+      <span class="section-label" style="color:rgba(255,255,255,0.85);">Jadwalkan percakapan</span>
+      <h2>Ready to transform your business?</h2>
+      <p>Hubungi kami untuk diskusi gratis 30 menit dan kami bantu sesuaikan AI yang tepat untuk kebutuhan Anda.</p>
+      <div class="stat-row">
+        <div class="stat">
+          <div class="num">120+</div>
+          <div class="label">Proyek selesai</div>
+        </div>
+        <div class="stat">
+          <div class="num">4.9</div>
+          <div class="label">Rating pelanggan</div>
+        </div>
+        <div class="stat">
+          <div class="num">5 min</div>
+          <div class="label">Waktu setup</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>AI Local</h4>
+        <ul>
+          <li><a href="#">Tentang</a></li>
+          <li><a href="#">Layanan</a></li>
+          <li><a href="#">Portfolio</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hubungi</h4>
+        <ul>
+          <li>email@ailocal.id</li>
+          <li>+62 21 1234 5678</li>
+          <li>Jakarta, Indonesia</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Layanan</h4>
+        <ul>
+          <li><a href="#">Chatbot</a></li>
+          <li><a href="#">Analitik</a></li>
+          <li><a href="#">Otomatisasi</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Ikuti</h4>
+        <ul>
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 AI Local. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const hamburger = document.getElementById('hamburger');
+      const navLinks = document.getElementById('navLinks');
+
+      hamburger.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+      });
+
+      // Close nav on link click
+      navLinks.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          navLinks.classList.remove('open');
+        });
+      });
+
+      // Smooth scroll to section
+      window.scrollToSection = function (id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+
+      // Reveal on scroll
+      const revealElements = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      revealElements.forEach(function (el) {
+        observer.observe(el);
+      });
+
+      // Counter animation for stats
+      const counterObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseFloat(el.dataset.target);
+            const duration = 1500;
+            const start = performance.now();
+
+            function step(currentTime) {
+              const elapsed = currentTime - start;
+              const progress = Math.min(elapsed / duration, 1);
+              const eased = 1 - Math.pow(1 - progress, 3);
+              el.textContent = Math.round(eased * target).toLocaleString();
+              if (progress < 1) {
+                requestAnimationFrame(step);
+              }
+            }
+
+            requestAnimationFrame(step);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll('.stat .num').forEach(function (el) {
+        counterObserver.observe(el);
+      });
+    })();
+  </script>
+</body>
+</html>
